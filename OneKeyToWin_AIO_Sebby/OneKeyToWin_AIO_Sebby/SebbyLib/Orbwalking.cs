@@ -797,7 +797,7 @@ namespace SebbyLib
                 var attackCalc = (int)(Player.AttackDelay * 1000) + (int)(Player.AttackCastDelay * 1000) + BrainFarmInt + Game.Ping / 2 + 1000 * 500 / (int)GetMyProjectileSpeed() ;
 
                 return
-                    MinionListAA.Any(minion => HealthPrediction.LaneClearHealthPrediction(minion, (int)(attackCalc * 1.5), FarmDelay) <= Player.GetAutoAttackDamage(minion));
+                    MinionListAA.Any(minion => HealthPrediction.LaneClearHealthPrediction(minion, (int)(attackCalc * 1.6), FarmDelay) <= Player.GetAutoAttackDamage(minion));
             }
 
             private bool ShouldWaitUnderTurret(Obj_AI_Minion noneKillableMinion)
@@ -875,8 +875,7 @@ namespace SebbyLib
 
                         if (mode == OrbwalkingMode.Freeze)
                             t += 200 + Game.Ping / 2;
-                        
-                            
+                          
                         var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
                         var damage = Player.GetAutoAttackDamage(minion, _config.Item("PassiveDmg", true).GetValue<bool>()) + _config.Item("DamageAdjust").GetValue<Slider>().Value;
                         var killable = predHealth <= damage;
@@ -898,11 +897,8 @@ namespace SebbyLib
 
                             if (predHealth <= 0 )
                             {
-                                if (HealthPrediction.GetHealthPrediction(minion, t - 30, FarmDelay) > 0)
-                                {
-                                    FireOnNonKillableMinion(minion);
-                                    return minion;
-                                }
+
+                                FireOnNonKillableMinion(minion);
                             }
                             else if (killable)
                             {
