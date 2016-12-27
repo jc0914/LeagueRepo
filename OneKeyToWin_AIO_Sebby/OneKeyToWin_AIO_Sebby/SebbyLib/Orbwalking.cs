@@ -118,17 +118,15 @@ namespace SebbyLib
                 {
                     var x = Utils.TickCount - DelayOnFire;
 
-                    if (x < 110 - Game.Ping / 2)
+                    if (x < 90)
                     {
                         BrainFarmInt -= 2;
                     }
-                    else if (x > 130 - Game.Ping / 2)
+                    else if (x > 110)
                     {
                         BrainFarmInt += 2;
                     }
-
                     Console.WriteLine(BrainFarmInt + " ADJ " + x + " " + TimeAdjust);
-                    //Console.WriteLine(missile.Target.BoundingRadius + " dis2 " + (missile.Position.Distance(missile.Target.Position)));
                 }
             }
         }
@@ -656,7 +654,7 @@ namespace SebbyLib
                 var sebbyFix = new Menu("Sebby FIX [ADVANCE]", "Sebby FIX [ADVANCE]");
 
                 sebbyFix.AddItem(new MenuItem("DamageAdjust", "Last hit auto attack damage [0 default]").SetShared().SetValue(new Slider(0,-100, 100)));
-                sebbyFix.AddItem(new MenuItem("AutoTimeAdjust", "Auto lasthit time adjust", true).SetShared().SetValue(false));
+                sebbyFix.AddItem(new MenuItem("AutoTimeAdjust", "Auto lasthit time adjust", true).SetShared().SetValue(true));
                 sebbyFix.AddItem(new MenuItem("TimeAdjust", "FASTER    Last hit time adjust    LATER").SetShared().SetValue(new Slider(0, -100, 100))).SetTooltip("0 defaul");
                 sebbyFix.AddItem(new MenuItem("PassiveDmg", "Last hit include passive damage", true).SetShared().SetValue(true));
 
