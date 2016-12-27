@@ -33,6 +33,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
         private Render.Sprite Intro;
         private static Render.Sprite Flash, Heal, Exhaust, Teleport, Smite, Ignite, Barrier, Clairvoyance, Cleanse, Ghost, Ultimate, Pink, Ward, PinkMM, WardMM, Not;
         private static Render.Sprite FlashS, HealS, ExhaustS, TeleportS, SmiteS, IgniteS, BarrierS, ClairvoyanceS, CleanseS, GhostS, UltimateS, Isready, Lost;
+        private static Render.Sprite FlashSquare, HealSquare, ExhaustSquare, TeleportSquare, SmiteSquare, IgniteSquare, BarrierSquare, ClairvoyanceSquare, CleanseSquare, GhostSquare;
         private bool MenuOpen = false;
         private static int NotTimer = Utils.TickCount + 1500;
 
@@ -74,6 +75,29 @@ namespace OneKeyToWin_AIO_Sebby.Core
             UltimateS = ImageLoader.GetSprite("r");
             Isready = ImageLoader.GetSprite("isready");
             Lost = ImageLoader.GetSprite("lost");
+
+            FlashSquare = ImageLoader.GetSprite("Flash");
+            HealSquare = ImageLoader.GetSprite("Heal");
+            ExhaustSquare = ImageLoader.GetSprite("Exhaust");
+            TeleportSquare = ImageLoader.GetSprite("Teleport");
+            IgniteSquare = ImageLoader.GetSprite("Ignite");
+            BarrierSquare = ImageLoader.GetSprite("Barrier");
+            ClairvoyanceSquare = ImageLoader.GetSprite("Clairvoyance");
+            CleanseSquare = ImageLoader.GetSprite("Cleanse");
+            GhostSquare = ImageLoader.GetSprite("Ghost");
+            SmiteSquare = ImageLoader.GetSprite("Smite");
+
+            FlashSquare.Scale = new Vector2(0.4f, 0.4f);
+            HealSquare.Scale = new Vector2(0.4f, 0.4f);
+            ExhaustSquare.Scale = new Vector2(0.4f, 0.4f);
+            TeleportSquare.Scale = new Vector2(0.4f, 0.4f);
+            IgniteSquare.Scale = new Vector2(0.4f, 0.4f);
+            BarrierSquare.Scale = new Vector2(0.4f, 0.4f);
+            ClairvoyanceSquare.Scale = new Vector2(0.4f, 0.4f);
+            CleanseSquare.Scale = new Vector2(0.4f, 0.4f);
+            GhostSquare.Scale = new Vector2(0.4f, 0.4f);
+            SmiteSquare.Scale = new Vector2(0.4f, 0.4f);
+
             Config.SubMenu("About OKTW©").AddItem(new MenuItem("logo", "Intro logo OKTW").SetValue(true));
 
             if (Config.Item("logo").GetValue<bool>())
@@ -427,35 +451,101 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
                     if (q.Level > 0)
                     {
-                        Drawing.DrawLine(barPos + new Vector2(9, 36), barPos + new Vector2(33 - (24 * qCal), 36), 5, qCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
+                        var position = barPos + new Vector2(9, 36);
+                        Drawing.DrawLine(position, barPos + new Vector2(33 - (24 * qCal), 36), 5, qCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
                         if (SpellTrackerLvl)
                             for (int i = 0 ; i < Math.Min(q.Level, 5) ; i++)
                                 Drawing.DrawLine(barPos + new Vector2(10 + i * 5, 37), barPos + new Vector2(11 + i * 5, 37), 3, System.Drawing.Color.Black);
-                            
-                        
+                        if (qCal > 0)
+                            DrawFontTextScreen(HudCd, MakeNiceNumber(q.CooldownExpires - Game.Time), position.X + 6, position.Y + 7, SharpDX.Color.White);
                     }
                     if (w.Level > 0)
                     {
-                        Drawing.DrawLine(barPos + new Vector2(35, 36), barPos + new Vector2(59 - (24 * wCal), 36), 5, wCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
+                        var position = barPos + new Vector2(35, 36);
+                        Drawing.DrawLine(position, barPos + new Vector2(59 - (24 * wCal), 36), 5, wCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
                         if (SpellTrackerLvl)
                             for (int i = 0 ; i < Math.Min(w.Level, 5) ; i++)
                                 Drawing.DrawLine(barPos + new Vector2(36 + i * 5, 37), barPos + new Vector2(37 + i * 5, 37), 3, System.Drawing.Color.Black);
-                        
+                        if (wCal > 0)
+                            DrawFontTextScreen(HudCd, MakeNiceNumber(w.CooldownExpires - Game.Time), position.X + 6, position.Y + 7, SharpDX.Color.White);
                     }
                     if (e.Level > 0)
                     {
-                        Drawing.DrawLine(barPos + new Vector2(61, 36), barPos + new Vector2(85 - (24 * eCal), 36), 5, eCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
+                        var position = barPos + new Vector2(61, 36);
+                        Drawing.DrawLine(position, barPos + new Vector2(85 - (24 * eCal), 36), 5, eCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
                         if (SpellTrackerLvl)
                             for (int i = 0 ; i < Math.Min(e.Level, 5) ; i++)
                                 Drawing.DrawLine(barPos + new Vector2(62 + i * 5, 37), barPos + new Vector2(63 + i * 5, 37), 3, System.Drawing.Color.Black);
-                        
+
+                        if (eCal > 0)
+                            DrawFontTextScreen(HudCd, MakeNiceNumber(e.CooldownExpires - Game.Time), position.X + 6, position.Y + 7, SharpDX.Color.White);
                     }
                     if (r.Level > 0)
                     {
-                        Drawing.DrawLine(barPos + new Vector2(87, 36), barPos + new Vector2(112 - (24 * rCal), 36), 5, rCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
+                        var position = barPos + new Vector2(87, 36);
+
+                        Drawing.DrawLine(position, barPos + new Vector2(112 - (24 * rCal), 36), 5, rCal > 0 ? System.Drawing.Color.Orange : System.Drawing.Color.YellowGreen);
                         if (SpellTrackerLvl)
                             for (int i = 0 ; i < Math.Min(r.Level, 5) ; i++)
                                 Drawing.DrawLine(barPos + new Vector2(88 + i * 5, 37), barPos + new Vector2(89 + i * 5, 37), 3, System.Drawing.Color.Black);
+
+                        if (rCal > 0)
+                            DrawFontTextScreen(HudCd, MakeNiceNumber(r.CooldownExpires - Game.Time), position.X + 6, position.Y + 7, SharpDX.Color.White);
+                    }
+
+                    var sum1 = hero.Hero.Spellbook.Spells[4];
+                    var sum2 = hero.Hero.Spellbook.Spells[5];
+ 
+                    if (sum1 != null)
+                    {
+
+                        var sumSprite1 = GetSummonerIconSquare(sum1.Name);
+                        
+                        var offset = new Vector2(-48, 17);
+                        if (hero.Hero.IsMe)
+                            offset = new Vector2(117, 17);
+
+                        sumSprite1.Position = barPos + offset;
+
+
+                        var sumTime = sum1.CooldownExpires - Game.Time;
+                        if (sumTime < 0)
+                        {
+                            sumSprite1.Color = new ColorBGRA(System.Drawing.Color.White.ToArgb());
+                            sumSprite1.OnEndScene();
+                        }
+                        else
+                        {
+                            sumSprite1.Color = new ColorBGRA(System.Drawing.Color.DimGray.ToArgb());
+                            sumSprite1.OnEndScene();
+
+                            DrawFontTextScreen(HudCd, MakeNiceNumber(sumTime), sumSprite1.Position.X + 6, sumSprite1.Position.Y + 7, SharpDX.Color.White);
+                        }
+
+                    }
+                    if (sum2 != null)
+                    {
+                        var offset = new Vector2(-20, 17);
+                        if (hero.Hero.IsMe)
+                            offset = new Vector2(145, 17);
+                        var sumSprite1 = GetSummonerIconSquare(sum2.Name);
+                        sumSprite1.Position = barPos + offset;
+                       
+                        sumSprite1.OnEndScene();
+                        var sumTime = sum2.CooldownExpires - Game.Time;
+
+                        if (sumTime < 0)
+                        {
+                            sumSprite1.Color = new ColorBGRA(System.Drawing.Color.White.ToArgb());
+                            sumSprite1.OnEndScene();
+                        }
+                        else
+                        {
+                            sumSprite1.Color = new ColorBGRA(System.Drawing.Color.DimGray.ToArgb());
+                            sumSprite1.OnEndScene();
+
+                            DrawFontTextScreen(HudCd, MakeNiceNumber(sumTime), sumSprite1.Position.X + 6, sumSprite1.Position.Y + 7, SharpDX.Color.White);
+                        }
                     }
                 }
 
@@ -464,10 +554,6 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
                 if (hero.Hero.IsEnemy)
                 {
-
-
-                   
-
                     if (ShowClicks && hero.Hero.IsValidTarget() && hero.LastWayPoint.IsValid() && hero.Hero.Position.Distance(hero.LastWayPoint) > 100)
                     {
                         drawLine(hero.Hero.Position, hero.LastWayPoint, 1, System.Drawing.Color.Red);
@@ -905,6 +991,31 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
         }
 
+        private Render.Sprite GetSummonerIconSquare(string name)
+        {
+            var nameToLower = name.ToLower();
+            if (nameToLower.Contains("flash"))
+                return FlashSquare;
+            else if (nameToLower.Contains("heal"))
+                return HealSquare;
+            else if (nameToLower.Contains("exhaust"))
+                return ExhaustSquare;
+            else if (nameToLower.Contains("teleport"))
+                return TeleportSquare;
+            else if (nameToLower.Contains("dot"))
+                return IgniteSquare;
+            else if (nameToLower.Contains("boost"))
+                return CleanseSquare;
+            else if (nameToLower.Contains("barrier"))
+                return BarrierSquare;
+            else if (nameToLower.Contains("haste"))
+                return GhostSquare;
+            else if (nameToLower.Contains("smite"))
+                return SmiteSquare;
+            else
+                return ClairvoyanceSquare;
+
+        }
         private Render.Sprite GetSummonerIconS(string name)
         {
             var nameToLower = name.ToLower();
