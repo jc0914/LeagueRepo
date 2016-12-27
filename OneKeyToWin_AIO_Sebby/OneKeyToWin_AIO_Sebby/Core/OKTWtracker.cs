@@ -104,11 +104,11 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
         private void OnUpdate(EventArgs args)
         {
+
             if (Program.LagFree(0))
             {
                 foreach (var extra in ChampionInfoList.Where(x => x.Hero.IsEnemy))
                 {
-                    extra.IncomingDamage = SebbyLib.OktwCommon.GetIncomingDamage2(extra.Hero, 0.5f);
                     var enemy = extra.Hero;
                     if (enemy.IsDead)
                     {
@@ -119,6 +119,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
                     }
                     else if (enemy.IsVisible)
                     {
+                        extra.IncomingDamage = SebbyLib.OktwCommon.GetIncomingDamage2(extra.Hero, 0.5f);
                         extra.LastWayPoint = extra.Hero.GetWaypoints().Last().To3D();
                         extra.PredictedPos = enemy.Position.Extend(extra.LastWayPoint, 125);
                         extra.LastVisablePos = enemy.Position;
