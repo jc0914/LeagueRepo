@@ -86,7 +86,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
             Utility.DelayAction.Add(7000, () => Intro.Remove());
 
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Hud").AddItem(new MenuItem("championInfo", "Show enemy avatars").SetValue(true));
-            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Hud").AddItem(new MenuItem("championInfoHD", "Full HD screen size").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Hud").AddItem(new MenuItem("championInfoHD", "Full HD screen size").SetValue(Drawing.Width > 1500));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Hud").AddItem(new MenuItem("posX", "Avatars posX").SetValue(new Slider(839, 1000, 0)));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Hud").AddItem(new MenuItem("posY", "Avatars posY").SetValue(new Slider(591, 1000, 0)));
 
