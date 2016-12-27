@@ -36,7 +36,15 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("rRange", "R range", true).SetValue(false));
             Config.SubMenu(Player.ChampionName).SubMenu("Draw").AddItem(new MenuItem("onlyRdy", "Draw only ready spells", true).SetValue(true));
 
-            Config.SubMenu(Player.ChampionName).SubMenu("E Shield Config").AddItem(new MenuItem("autoW", "Auto E", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("autoQ", "Auto Q", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("harassQ", "Harass Q", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("Q Config").AddItem(new MenuItem("QHarassMana", "Harass Mana", true).SetValue(new Slider(30, 100, 0)));
+
+            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("autoW", "Auto W", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("harassW", "Harass W", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("W", "Auto W SpeedUp logic", true).SetValue(false));
+
+            Config.SubMenu(Player.ChampionName).SubMenu("E Shield Config").AddItem(new MenuItem("autoE", "Auto E", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("E Shield Config").AddItem(new MenuItem("hadrCC", "Auto E hard CC", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("E Shield Config").AddItem(new MenuItem("poison", "Auto E poison", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("E Shield Config").AddItem(new MenuItem("Wdmg", "E dmg % hp", true).SetValue(new Slider(10, 100, 0)));
@@ -57,7 +65,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             foreach (var enemy in HeroManager.Enemies)
                 Config.SubMenu(Player.ChampionName).SubMenu("R config").SubMenu("Always R").AddItem(new MenuItem("Ralways" + enemy.ChampionName, enemy.ChampionName,true).SetValue(false));
 
-            Config.SubMenu(Player.ChampionName).AddItem(new MenuItem("W", "Auto W SpeedUp logic", true).SetValue(false));
+           
             Game.OnUpdate += Game_OnGameUpdate;
             GameObject.OnCreate += Obj_AI_Base_OnCreate;
             Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
@@ -177,7 +185,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             else
                 Rsmart = false;
 
-            if (Program.LagFree(1))
+            if (Program.LagFree(1) && Config.Item("autoQ", true).GetValue<bool>())
             {
                 LogicQ();
                 LogicFarm();
@@ -247,15 +255,16 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void LogicW()
         {
-            foreach (var t in HeroManager.Enemies.Where(t => t.IsValidTarget() && BallPos.Distance(t.ServerPosition) < 250 && t.Health < W.GetDamage(t)))
+            foreach (var t in HeroManager.Enemies.Where(t => t.IsValidTarget() && BallPos.Distance(Prediction.GetPrediction(t,0.1f).CastPosition) < 260 && t.Health < W.GetDamage(t) - OktwCommon.GetIncomingDamage(t)))
             {
                 W.Cast();
-                return;
             }
+            if (!Config.Item("autoW", true).GetValue<bool>())
+                return;
             if (CountEnemiesInRangeDeley(BallPos, W.Width, 0f) > 0 && Player.Mana > RMANA + WMANA)
             {
-                W.Cast();
-                return;
+                if (Program.Harass && Config.Item("harassW", true).GetValue<bool>())
+                   W.Cast();
             }
             if (Config.Item("W", true).GetValue<bool>() && !Program.Harass && !Program.Combo && ObjectManager.Player.Mana > Player.MaxMana * 0.95 && Player.HasBuff("orianaghostself"))
                 W.Cast();
@@ -266,11 +275,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             var t = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (t.IsValidTarget() && Q.IsReady())
             {
-                if (Q.GetDamage(t) + W.GetDamage(t) > t.Health)
+                if (Q.GetDamage(t) + W.GetDamage(t) > t.Health - OktwCommon.GetIncomingDamage(t))
                     CastQ(t);
                 else if (Program.Combo && Player.Mana > RMANA + QMANA - 10)
                     CastQ(t);
-                else if (Program.Harass && Player.Mana > RMANA + QMANA + WMANA + EMANA && Config.Item("Harass" + t.ChampionName).GetValue<bool>())
+                else if (Program.Harass && Player.ManaPercent > Config.Item("QHarassMana", true).GetValue<Slider>().Value && Config.Item("Harass" + t.ChampionName).GetValue<bool>() && Config.Item("harassQ", true).GetValue<bool>())
                     CastQ(t);
             }
             if (Config.Item("W", true).GetValue<bool>() && !t.IsValidTarget() && Program.Combo && Player.Mana > RMANA + 3 * QMANA + WMANA + EMANA + WMANA)
@@ -401,7 +410,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (sender.IsMe && args.SData.Name == "OrianaIzunaCommand")
                 BallPos = args.End;
 
-             if (!E.IsReady() || !sender.IsEnemy || !Config.Item("autoW", true).GetValue<bool>() || Player.Mana < EMANA + RMANA || sender.Distance(Player.Position) > 1600)
+             if (!E.IsReady() || !sender.IsEnemy || !Config.Item("autoE", true).GetValue<bool>() || Player.Mana < EMANA + RMANA || sender.Distance(Player.Position) > 1600)
                 return;
 
             foreach (var ally in HeroManager.Allies.Where(ally => ally.IsValid && !ally.IsDead && Player.Distance(ally.ServerPosition) < E.Range))
