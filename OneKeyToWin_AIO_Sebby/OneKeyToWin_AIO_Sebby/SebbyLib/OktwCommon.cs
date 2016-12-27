@@ -66,7 +66,7 @@ namespace SebbyLib
 
         public static bool CanHarras()
         {
-            if (!Player.IsWindingUp && !Player.UnderTurret(true) && Orbwalking.CanMove(50) && !OneKeyToWin_AIO_Sebby.Program.Orbwalker.ShouldWait())
+            if (!Player.IsWindingUp && !Player.UnderTurret(true) && Orbwalking.CanMove(50))
                 return true;
             else
                 return false;
