@@ -654,7 +654,7 @@ namespace SebbyLib
                 var sebbyFix = new Menu("Sebby FIX [ADVANCE]", "Sebby FIX [ADVANCE]");
 
                 sebbyFix.AddItem(new MenuItem("DamageAdjust", "Last hit auto attack damage [0 default]").SetShared().SetValue(new Slider(0,-100, 100)));
-                sebbyFix.AddItem(new MenuItem("AutoTimeAdjust", "Auto lasthit time adjust", true).SetShared().SetValue(true));
+                sebbyFix.AddItem(new MenuItem("AutoTimeAdjust1", "Auto lasthit time adjust", true).SetShared().SetValue(true));
                 sebbyFix.AddItem(new MenuItem("TimeAdjust", "FASTER    Last hit time adjust    LATER").SetShared().SetValue(new Slider(0, -100, 100))).SetTooltip("0 defaul");
                 sebbyFix.AddItem(new MenuItem("PassiveDmg", "Last hit include passive damage", true).SetShared().SetValue(true));
 
@@ -833,9 +833,6 @@ namespace SebbyLib
                 List<Obj_AI_Base> wards = new List<Obj_AI_Base>();
                 List<Obj_AI_Base> other = new List<Obj_AI_Base>();
 
-                if (!_config.Item("AutoTimeAdjust" , true).GetValue<bool>())
-                    BrainFarmInt = -TimeAdjust - 100;
-
                 var firstT = (int)(Player.AttackCastDelay * 1000) + BrainFarmInt + Game.Ping / 2;
                 var projectileSpeed = (int)GetMyProjectileSpeed();
 
@@ -860,6 +857,9 @@ namespace SebbyLib
                 /*Killable Minion*/
                 if (mode == OrbwalkingMode.LaneClear || mode == OrbwalkingMode.Mixed || mode == OrbwalkingMode.LastHit || mode == OrbwalkingMode.Freeze)
                 {
+                    if (!_config.Item("AutoTimeAdjust1", true).GetValue<bool>())
+                        BrainFarmInt = -TimeAdjust - 100;
+
                     var LastHitList = minionsFiltered
                         .Where(minion => minion.Team != GameObjectTeam.Neutral)
                             .OrderByDescending(minion => minion.CharData.BaseSkinName.Contains("Super"))
