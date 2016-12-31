@@ -119,9 +119,27 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (!E.IsReady() || args.SData.IsAutoAttack() || Player.HealthPercent > Config.Item("Edmg", true).GetValue<Slider>().Value || !Config.Item("autoE", true).GetValue<bool>()
-                || !sender.IsEnemy || sender.IsMinion || !sender.IsValid<Obj_AI_Hero>() || args.SData.Name.ToLower() == "tormentedsoil")
+
+            if (!E.IsReady() || !(sender is Obj_AI_Hero) || !sender.IsEnemy || Player.HealthPercent > Config.Item("Edmg", true).GetValue<Slider>().Value || !Config.Item("autoE", true).GetValue<bool>()
+                 || args.SData.Name.ToLower() == "tormentedsoil")
                 return;
+
+            if (args.SData.IsAutoAttack())
+            {
+                switch (args.SData.Name)
+                {
+                    case "UdyrBearAttack":
+                    case "GoldCardPreAttack":
+                    case "RedCardPreAttack":
+                    case "BlueCardPreAttack":
+                    case "NautilusRavageStrikeAttack":
+                        {
+                            E.Cast();
+                        }
+                        break;
+                }
+                return;
+            }
 
             if (Config.Item("spell" + args.SData.Name) != null && !Config.Item("spell" + args.SData.Name).GetValue<bool>())
                 return;
