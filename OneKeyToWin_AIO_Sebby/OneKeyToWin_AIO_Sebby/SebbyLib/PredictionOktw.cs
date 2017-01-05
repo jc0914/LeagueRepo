@@ -422,7 +422,13 @@ namespace SebbyLib.Prediction
                 return result;
             }
 
-            if (!input.Unit.IsWindingUp && (!input.Unit.CanMove || input.Unit.IsRooted))
+            if (input.Unit.IsWindingUp)
+            {
+                OktwCommon.debug("PRED: winding block");
+                result.Hitchance = HitChance.Medium;
+                return result;
+            }
+            else if (!input.Unit.CanMove || input.Unit.IsRooted)
             {
                 OktwCommon.debug("PRED: After CC detection " + totalDelay);
                 result.Hitchance = HitChance.VeryHigh;
