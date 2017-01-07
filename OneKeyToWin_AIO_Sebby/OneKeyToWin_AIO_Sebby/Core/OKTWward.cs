@@ -22,7 +22,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
     class OKTWward : Program
     {
-        private bool rengar = false;
+        private bool Rengar = false;
         Obj_AI_Hero Vayne = null;
 
         public static List<HiddenObj> HiddenObjList = new List<HiddenObj>();
@@ -51,7 +51,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
             foreach (var hero in HeroManager.Enemies)
             {
                 if (hero.ChampionName == "Rengar")
-                    rengar = true;
+                    Rengar = true;
                 if (hero.ChampionName == "Vayne")
                     Vayne = hero;
             }
@@ -79,7 +79,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
             if (Config.Item("autoBuy").GetValue<bool>() && Player.InFountain() && !ScryingOrb.IsOwned() && Player.Level >= 9 && MenuGUI.IsShopOpen)
                 Player.BuyItem(ItemId.Farsight_Orb_Trinket);
 
-            if(rengar && Player.HasBuff("rengarralertsound"))
+            if(Rengar && Player.HasBuff("rengarralertsound"))
                 CastOracleAlterationAndControlWards(Player.ServerPosition);
             
             if (Vayne != null && Vayne.IsValidTarget(1000) && Vayne.HasBuff("vaynetumblefade"))
@@ -234,7 +234,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
                         HiddenObjList.Add(new HiddenObj() { type = 1, pos = sender.Position, endTime = Game.Time + dupa.Mana });
                 }
             }
-            else if (rengar && sender.Position.Distance(Player.Position) < 800)
+            else if (Rengar && sender.Position.Distance(Player.Position) < 800)
             {
                 switch (sender.Name)
                 {
