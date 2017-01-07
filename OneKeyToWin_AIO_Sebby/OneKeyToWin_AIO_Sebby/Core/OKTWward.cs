@@ -28,8 +28,8 @@ namespace OneKeyToWin_AIO_Sebby.Core
         public static List<HiddenObj> HiddenObjList = new List<HiddenObj>();
 
         private Items.Item
-            VisionWard = new Items.Item(2055, 550f),
-            OracleLens = new Items.Item(3364, 550f),
+            ControlWard = new Items.Item(2055, 550f),
+            OracleAlteration = new Items.Item(3364, 550f),
             WardN = new Items.Item(2044, 600f),
             TrinketN = new Items.Item(3340, 600f),
             SightStone = new Items.Item(2049, 600f),
@@ -46,7 +46,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
             Config.SubMenu("AutoWard OKTW©").AddItem(new MenuItem("autoBuy", "Auto buy blue trinket after lvl 9").SetValue(false));
             Config.SubMenu("AutoWard OKTW©").AddItem(new MenuItem("AutoWardBlue", "Auto Blue Trinket").SetValue(true));
             Config.SubMenu("AutoWard OKTW©").AddItem(new MenuItem("AutoWardCombo", "Only combo mode").SetValue(true));
-            Config.SubMenu("AutoWard OKTW©").AddItem(new MenuItem("AutoWardPink", "Auto VisionWard, OracleLens").SetValue(true));
+            Config.SubMenu("AutoWard OKTW©").AddItem(new MenuItem("AutoWardPink", "Auto Control Ward, Oracle Alteration").SetValue(true));
 
             foreach (var hero in HeroManager.Enemies)
             {
@@ -80,10 +80,10 @@ namespace OneKeyToWin_AIO_Sebby.Core
                 Player.BuyItem(ItemId.Farsight_Orb_Trinket);
 
             if(rengar && Player.HasBuff("rengarralertsound"))
-                CastVisionWards(Player.ServerPosition);
+                CastOracleAlterationAndControlWards(Player.ServerPosition);
             
             if (Vayne != null && Vayne.IsValidTarget(1000) && Vayne.HasBuff("vaynetumblefade"))
-                CastVisionWards(Vayne.ServerPosition);
+                CastOracleAlteration(Vayne.ServerPosition);
 
             AutoWardLogic();
         }
@@ -239,10 +239,10 @@ namespace OneKeyToWin_AIO_Sebby.Core
                 switch (sender.Name)
                 {
                     case "Rengar_LeapSound.troy":
-                        CastVisionWards(sender.Position);
+                        CastOracleAlterationAndControlWards(sender.Position);
                         break;
                     case "Rengar_Base_R_Alert":
-                        CastVisionWards(sender.Position);
+                        CastOracleAlterationAndControlWards(sender.Position);
                         break;
                 }
             }
@@ -290,33 +290,33 @@ namespace OneKeyToWin_AIO_Sebby.Core
                 if(args.Target == null)
                     AddWard(args.SData.Name.ToLower(), args.End);
 
-                if ((OracleLens.IsReady() || VisionWard.IsReady()) && sender.Distance(Player.Position) < 1200)
+                if ((OracleAlteration.IsReady() || ControlWard.IsReady()) && sender.Distance(Player.Position) < 1200)
                 {
                     switch (args.SData.Name.ToLower())
                     {
                         case "akalismokebomb":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlteration(sender.ServerPosition);
                             break;
                         case "deceive":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlteration(sender.ServerPosition);
                             break;
                         case "khazixr":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlteration(sender.ServerPosition);
                             break;
                         case "khazixrlong":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlteration(sender.ServerPosition);
                             break;
                         case "talonshadowassault":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlteration(sender.ServerPosition);
                             break;
                         case "monkeykingdecoy":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlteration(sender.ServerPosition);
                             break;
                         case "rengarr":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlterationAndControlWards(sender.ServerPosition);
                             break;
                         case "twitchhideinshadows":
-                            CastVisionWards(sender.ServerPosition);
+                            CastOracleAlterationAndControlWards(sender.ServerPosition);
                             break;
                     }
                 }
@@ -373,14 +373,23 @@ namespace OneKeyToWin_AIO_Sebby.Core
             }
         }
 
-        private void CastVisionWards(Vector3 position)
+        private void CastOracleAlterationAndControlWards(Vector3 position)
         {
             if (Config.Item("AutoWardPink").GetValue<bool>())
             {
-                if (OracleLens.IsReady())
-                    OracleLens.Cast(Player.Position.Extend(position, OracleLens.Range));
-                else if (VisionWard.IsReady())
-                    VisionWard.Cast(Player.Position.Extend(position, VisionWard.Range));
+                if (OracleAlteration.IsReady())
+                    OracleAlteration.Cast(Player.Position.Extend(position, OracleAlteration.Range));
+                else if (ControlWard.IsReady())
+                    ControlWard.Cast(Player.Position.Extend(position, ControlWard.Range));
+            }
+        }
+
+        private void CastOracleAlteration(Vector3 position)
+        {
+            if (Config.Item("AutoWardPink").GetValue<bool>())
+            {
+                if (OracleAlteration.IsReady())
+                    OracleAlteration.Cast(Player.Position.Extend(position, OracleAlteration.Range));
             }
         }
     }
