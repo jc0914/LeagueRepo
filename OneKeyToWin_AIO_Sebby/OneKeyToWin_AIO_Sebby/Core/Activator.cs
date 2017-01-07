@@ -46,7 +46,7 @@ namespace OneKeyToWin_AIO_Sebby
 
             //def
             FaceOfTheMountain = new Items.Item(3401, 600f),
-            Redemption = new Items.Item(3049, 5500),
+            Redemption = new Items.Item(3107, 5500),
             Zhonya = new Items.Item(3157, 0),
             Seraph = new Items.Item(3040, 0),
             Solari = new Items.Item(3190, 600f),
@@ -260,12 +260,14 @@ namespace OneKeyToWin_AIO_Sebby
         {
             if (Redemption.IsReady() && Config.Item("Redemption").GetValue<bool>())
             {
+                Console.WriteLine("TEST");
                 var target = HeroManager.Enemies.FirstOrDefault(x => x.IsValidTarget(5000) && x.Position.CountAlliesInRange(600) > 0);
                 if (target != null)
                 {
-                    var ally = HeroManager.Enemies.FirstOrDefault(x => x.IsValid && !x.IsDead && x.Position.Distance(target.Position) < 600);
+                    var ally = HeroManager.Allies.FirstOrDefault(x => x.IsValid && !x.IsDead && x.Position.Distance(target.Position) < 600);
                     if (ally != null && ally.Health - OktwCommon.GetIncomingDamage(ally) < ally.MaxHealth * 0.7)
                     {
+                        
                         if (target.CountAlliesInRange(600) > 1 || ally.CountEnemiesInRange(600) > 1)
                         {
                             var predInput = new SebbyLib.Prediction.PredictionInput
