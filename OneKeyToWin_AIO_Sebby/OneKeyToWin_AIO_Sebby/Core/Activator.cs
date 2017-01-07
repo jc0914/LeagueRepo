@@ -263,8 +263,8 @@ namespace OneKeyToWin_AIO_Sebby
                 var target = HeroManager.Enemies.FirstOrDefault(x => x.IsValidTarget(5000) && x.Position.CountAlliesInRange(600) > 0);
                 if (target != null)
                 {
-                    var ally = HeroManager.Allies.FirstOrDefault(x => x.IsValid && !x.IsDead && x.Position.Distance(target.Position) < 600);
-                    if (ally != null && ally.Health - OktwCommon.GetIncomingDamage(ally) < ally.MaxHealth * 0.7)
+                    var ally = HeroManager.Allies.FirstOrDefault(x => x.IsValid && !x.IsDead && x.Position.Distance(target.Position) <400);
+                    if (ally != null && ally.Health - OktwCommon.GetIncomingDamage(ally) < ally.MaxHealth * 0.5)
                     {
                         
                         if (target.CountAlliesInRange(600) > 1 || ally.CountEnemiesInRange(600) > 1)
