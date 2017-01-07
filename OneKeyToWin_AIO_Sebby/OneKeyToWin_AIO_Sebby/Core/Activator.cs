@@ -45,7 +45,8 @@ namespace OneKeyToWin_AIO_Sebby
             GLP800= new Items.Item(3030, 800f),
 
             //def
-        FaceOfTheMountain = new Items.Item(3401, 600f),
+            FaceOfTheMountain = new Items.Item(3401, 600f),
+            Redemption = new Items.Item(3049, 5500),
             Zhonya = new Items.Item(3157, 0),
             Seraph = new Items.Item(3040, 0),
             Solari = new Items.Item(3190, 600f),
@@ -157,8 +158,10 @@ namespace OneKeyToWin_AIO_Sebby
 
             Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("Seraph", "Seraph").SetValue(true));
             Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("Solari", "Solari").SetValue(true));
-            // CLEANSERS 
+            Config.SubMenu("Activator OKTW©").SubMenu("Defensives").AddItem(new MenuItem("Redemption", "Redemption").SetValue(true));
             
+            // CLEANSERS 
+
             Config.SubMenu("Activator OKTW©").SubMenu("Cleansers").AddItem(new MenuItem("Clean", "Quicksilver, Mikaels, Mercurial, Dervish").SetValue(true));
 
             foreach (var ally in HeroManager.Allies)
@@ -255,6 +258,36 @@ namespace OneKeyToWin_AIO_Sebby
 
         private void Survival()
         {
+            if (Redemption.IsReady() && Config.Item("Redemption").GetValue<bool>())
+            {
+                var target = HeroManager.Enemies.FirstOrDefault(x => x.IsValidTarget(5000) && x.Position.CountAlliesInRange(500) > 0);
+                if (target != null)
+                {
+                    var ally = HeroManager.Enemies.FirstOrDefault(x => x.IsValidTarget(5000,false) && x.Position.Distance(target.Position) < 600);
+                    if (ally != null && ally.Health - OktwCommon.GetIncomingDamage(ally) < ally.MaxHealth * 0.7)
+                    {
+                        if (target.CountAlliesInRange(600) > 1 || ally.CountEnemiesInRange(600) > 1)
+                        {
+                            var predInput = new SebbyLib.Prediction.PredictionInput
+                            {
+                                Aoe = true,
+                                Collision = false,
+                                Speed = float.MaxValue,
+                                Delay = 0.5f,
+                                Range = 5500,
+                                From = Player.ServerPosition,
+                                Radius = 500,
+                                Unit = target,
+                                Type = SebbyLib.Prediction.SkillshotType.SkillshotCircle
+                            };
+                            var pos = SebbyLib.Prediction.Prediction.GetPrediction(predInput);
+                            Redemption.Cast(pos.CastPosition);
+                        }
+                    }
+                }
+            }
+
+
             if (Player.HealthPercent < 60 && (Seraph.IsReady() || Zhonya.IsReady()  || CanUse(barrier)))
             {
                 double dmg = OktwCommon.GetIncomingDamage(Player);
