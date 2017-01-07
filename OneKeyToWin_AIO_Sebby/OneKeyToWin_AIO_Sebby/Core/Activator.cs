@@ -260,7 +260,6 @@ namespace OneKeyToWin_AIO_Sebby
         {
             if (Redemption.IsReady() && Config.Item("Redemption").GetValue<bool>())
             {
-                Console.WriteLine("TEST");
                 var target = HeroManager.Enemies.FirstOrDefault(x => x.IsValidTarget(5000) && x.Position.CountAlliesInRange(600) > 0);
                 if (target != null)
                 {
