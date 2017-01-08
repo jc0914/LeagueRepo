@@ -368,11 +368,20 @@ namespace SebbyLib.Prediction
                 return result;
             }
 
+            // LOW HP DETECTION ///////////////////////////////////////////////////////////////////////////////////
+
+            if (input.Unit.HealthPercent < 20 || ObjectManager.Player.HealthPercent < 20)
+            {
+                result.Hitchance = HitChance.VeryHigh;
+                OktwCommon.debug("PRED VH: LOW HP");
+                return result;
+            }
+
             // NEW VISABLE ///////////////////////////////////////////////////////////////////////////////////
 
             if (UnitTracker.GetLastVisableTime(input.Unit) < 100)
             {
-                OktwCommon.debug("PRED: NEW VISABLE");
+                OktwCommon.debug("PRED M: NEW VISABLE");
                 result.Hitchance = HitChance.Medium;
                 return result;
             }
@@ -387,9 +396,7 @@ namespace SebbyLib.Prediction
             var distanceFromToUnit = input.From.Distance(input.Unit.ServerPosition);
             var distanceFromToWaypoint = lastWaypiont.Distance(input.From);
 
-            Vector2 pos1 = lastWaypiont.To2D() - input.Unit.Position.To2D();
-            Vector2 pos2 = input.From.To2D() - input.Unit.Position.To2D();
-            var getAngle = pos1.AngleBetween(pos2);
+           
 
             float speedDelay = distanceFromToUnit / input.Speed;
 
@@ -417,30 +424,34 @@ namespace SebbyLib.Prediction
 
             if (distanceUnitToWaypoint > 0 && distanceUnitToWaypoint < 50 + input.Radius)
             {
-                OktwCommon.debug("PRED: SHORT CLICK DETECTION");
+                OktwCommon.debug("PRED M: SHORT CLICK DETECTION");
                 result.Hitchance = HitChance.Medium;
                 return result;
             }
 
             if (input.Unit.IsWindingUp)
             {
-                OktwCommon.debug("PRED: winding block");
+                OktwCommon.debug("PRED M: winding block");
                 result.Hitchance = HitChance.Medium;
                 return result;
             }
             else if (!input.Unit.CanMove || input.Unit.IsRooted)
             {
-                OktwCommon.debug("PRED: After CC detection " + totalDelay);
+                OktwCommon.debug("PRED VH: After CC detection " + totalDelay);
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
 
             if (distanceUnitToWaypoint > 0)
             {
+                Vector2 pos1 = lastWaypiont.To2D() - input.Unit.Position.To2D();
+                Vector2 pos2 = input.From.To2D() - input.Unit.Position.To2D();
+                var getAngle = pos1.AngleBetween(pos2);
+
                 // RUN IN LANE DETECTION /////////////////////////////////////////////////////////////////////////////////// 
-                if (getAngle < 15 || getAngle > 160 || (getAngle > 130 && distanceUnitToWaypoint > 500) || OktwCommon.IsMovingInSameDirection(ObjectManager.Player, input.Unit))
+                if (getAngle < 15 || getAngle > 160 || ((getAngle > 140 || getAngle < 30) && distanceUnitToWaypoint > 500 && OktwCommon.IsMovingInSameDirection(ObjectManager.Player, input.Unit)))
                 {
-                    OktwCommon.debug("PRED: ANGLE " + getAngle);
+                    OktwCommon.debug("PRED VH: ANGLE " + getAngle);
                     result.Hitchance = HitChance.VeryHigh;
                     return result;
                 }
@@ -461,7 +472,7 @@ namespace SebbyLib.Prediction
                     }
                     if (runOutWall)
                     {
-                        OktwCommon.debug("PRED: RUN OUT WALL");
+                        OktwCommon.debug("PRED VH: RUN OUT WALL");
                         result.Hitchance = HitChance.VeryHigh;
                         return result;
                     }
@@ -469,7 +480,7 @@ namespace SebbyLib.Prediction
                 else if (UnitTracker.GetLastNewPathTime(input.Unit) > 250 && input.Delay < 0.3)
                 {
                     // LONG TIME ///////////////////////////////////////////////////////////////////////////////////
-                    OktwCommon.debug("PRED: LONG TIME");
+                    OktwCommon.debug("PRED VH: LONG TIME");
                     result.Hitchance = HitChance.VeryHigh;
                     return result;
                 }
@@ -481,7 +492,7 @@ namespace SebbyLib.Prediction
             {
                 if(UnitTracker.GetLastAutoAttackTime(input.Unit) < 0.1d && totalDelay < 0.7 )
                 {
-                    OktwCommon.debug("PRED: AA try");
+                    OktwCommon.debug("PRED VH: AA try");
                     result.Hitchance = HitChance.VeryHigh;
                     return result;
                 }
@@ -498,7 +509,7 @@ namespace SebbyLib.Prediction
                 }
                 else
                 {
-                    OktwCommon.debug("PRED: STOP LOGIC");
+                    OktwCommon.debug("PRED VH: STOP LOGIC");
                     result.Hitchance = HitChance.VeryHigh;
                         return result;
                 }
@@ -516,55 +527,41 @@ namespace SebbyLib.Prediction
 
             if (distanceFromToUnit < 250)
             {
-                OktwCommon.debug("PRED: SPECIAL CASES NEAR");
+                OktwCommon.debug("PRED VH: SPECIAL CASES NEAR");
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
             else if (input.Unit.MoveSpeed < 250)
             {
-                OktwCommon.debug("PRED: SPECIAL CASES SLOW");
+                OktwCommon.debug("PRED VH: SPECIAL CASES SLOW");
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
             else if (distanceFromToWaypoint < 250)
             {
-                OktwCommon.debug("PRED: SPECIAL CASES ON WAY");
+                OktwCommon.debug("PRED VH: SPECIAL CASES ON WAY");
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
-
-            
 
             // LONG CLICK DETECTION ///////////////////////////////////////////////////////////////////////////////////
 
             if (distanceUnitToWaypoint > pathMinLen)
             {
-                OktwCommon.debug("PRED: LONG CLICK DETECTION");
+                OktwCommon.debug("PRED VH: LONG CLICK DETECTION");
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }  
+
+            // NEW PATH ///////////////////////////////////////////////////////////////////////////////////
+
+            if (UnitTracker.GetLastNewPathTime(input.Unit) < 100 && distanceUnitToWaypoint > fixRange)
+            {
+                OktwCommon.debug("PRED VH: NEW PATH");
                 result.Hitchance = HitChance.VeryHigh;
                 return result;
             }
 
-            // LOW HP DETECTION ///////////////////////////////////////////////////////////////////////////////////
-
-            if (input.Unit.HealthPercent < 20 || ObjectManager.Player.HealthPercent < 20)
-            {
-                result.Hitchance = HitChance.VeryHigh;
-                OktwCommon.debug("Low hp");
-                return result;
-            }
-
-            // CIRCLE NEW PATH ///////////////////////////////////////////////////////////////////////////////////
-
-            if (input.Type == SkillshotType.SkillshotCircle)
-            {
-                if (UnitTracker.GetLastNewPathTime(input.Unit) < 100 && distanceUnitToWaypoint > fixRange)
-                {
-                    OktwCommon.debug("PRED: CIRCLE NEW PATH");
-                    result.Hitchance = HitChance.VeryHigh;
-                    return result;
-                }
-            }
-           
             //Program.debug("PRED: NO DETECTION");
             return result;
         }
@@ -699,7 +696,7 @@ namespace SebbyLib.Prediction
         {
             if (input.Unit.Distance(input.From, true) < 230 * 230)
             {
-                input.Delay /= 2;
+
                 speed /= 1.5f;
             }
 
