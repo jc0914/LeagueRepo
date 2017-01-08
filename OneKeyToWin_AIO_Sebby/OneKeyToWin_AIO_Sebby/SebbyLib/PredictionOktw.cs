@@ -458,7 +458,7 @@ namespace SebbyLib.Prediction
 
                 // WALL LOGIC  ///////////////////////////////////////////////////////////////////////////////////
 
-                var points = OktwCommon.CirclePoints(15, 300, input.Unit.Position).Where(x => x.IsWall());
+                var points = OktwCommon.CirclePoints(10, 200, input.Unit.Position).Where(x => x.IsWall());
 
                 if (points.Count() > 2)
                 {
@@ -555,7 +555,7 @@ namespace SebbyLib.Prediction
 
             // NEW PATH ///////////////////////////////////////////////////////////////////////////////////
 
-            if (UnitTracker.GetLastNewPathTime(input.Unit) < 100 && distanceUnitToWaypoint > fixRange)
+            if (UnitTracker.GetLastNewPathTime(input.Unit) < 80 && distanceUnitToWaypoint > fixRange)
             {
                 OktwCommon.debug("PRED VH: NEW PATH");
                 result.Hitchance = HitChance.VeryHigh;
