@@ -127,17 +127,17 @@ namespace OneKeyToWin_AIO_Sebby.Core
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Awareness radar").AddItem(new MenuItem("ScreenRadar", "Enable").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Awareness radar").AddItem(new MenuItem("ScreenRadarEnemy", "Only enemy").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Awareness radar").AddItem(new MenuItem("ScreenRadarJungler", "Only jungler").SetValue(true));
-            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("HpBar", "Damage indicators").SetValue(true));
+            
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Spell tracker").AddItem(new MenuItem("SpellTrackerEnemy", "Enemy").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Spell tracker").AddItem(new MenuItem("SpellTrackerAlly", "Ally").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Spell tracker").AddItem(new MenuItem("SpellTrackerMe", "Me").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Spell tracker").AddItem(new MenuItem("SpellTrackerLvl", "Show spell lvl (can drop fps)").SetValue(true));
-            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("ShowClicks", "Show enemy clicks").SetValue(true));
-            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("showWards", "Show hidden objects, wards").SetValue(true));
-            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("buffTracker", "Buff tracker").SetValue(true));
-            
 
-            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Minimap").AddItem(new MenuItem("minimap", "Mini-map hack").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("ShowClicks", "Show enemy clicks").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("showWards", "Show hidden objects, wards").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("buffTracker", "My buff tracker").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("HpBar", "Damage indicators").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("minimap", "Mini-map hack").SetValue(true));
 
             Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("disableDraws", "DISABLE UTILITY DRAWS").SetValue(false));
 
@@ -458,6 +458,11 @@ namespace OneKeyToWin_AIO_Sebby.Core
                     {
                         color = System.Drawing.Color.Purple;
                         buffName = " Baron";
+                    }
+                    else if (buff.DisplayName.Contains("Sheen"))
+                    {
+                        color = System.Drawing.Color.Blue;
+                        buffName = " Sheen";
                     }
                     else
                     {
