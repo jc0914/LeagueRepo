@@ -134,6 +134,8 @@ namespace OneKeyToWin_AIO_Sebby.Core
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").SubMenu("Spell tracker").AddItem(new MenuItem("SpellTrackerLvl", "Show spell lvl (can drop fps)").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("ShowClicks", "Show enemy clicks").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("showWards", "Show hidden objects, wards").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").SubMenu("Screen").AddItem(new MenuItem("buffTracker", "Buff tracker").SetValue(true));
+            
 
             Config.SubMenu("Utility, Draws OKTW©").SubMenu("Minimap").AddItem(new MenuItem("minimap", "Mini-map hack").SetValue(true));
 
@@ -424,6 +426,67 @@ namespace OneKeyToWin_AIO_Sebby.Core
                     }
                 }
                 #endregion
+            }
+
+            if (Config.Item("buffTracker").GetValue<bool>())
+            {
+                var j = 50;
+                foreach (var buff in Player.Buffs.Where(buff => buff.Type == BuffType.CombatEnchancer))
+                {
+                    var timeToEnd = buff.EndTime - Game.Time;
+
+                    if (timeToEnd < 0 || timeToEnd > 1000 || buff.DisplayName.ToLower().Contains("mastery"))
+                        continue;
+
+                    var percent = (timeToEnd / (buff.EndTime - buff.StartTime)) * 50;
+
+                    var color = System.Drawing.Color.YellowGreen;
+
+                    var buffName = "";
+
+                    if (buff.DisplayName.Contains("AncientGolem"))
+                    {
+                        color = System.Drawing.Color.Aqua;
+                        buffName = " Blue";
+                    }
+                    else if (buff.DisplayName.Contains("LizardElder"))
+                    {
+                        color = System.Drawing.Color.Red;
+                        buffName = " Red";
+                    }
+                    else if (buff.DisplayName.Contains("OfBaron"))
+                    {
+                        color = System.Drawing.Color.Purple;
+                        buffName = " Baron";
+                    }
+                    else
+                    {
+                        if (percent < 10)
+                            color = System.Drawing.Color.OrangeRed;
+                        else if (percent < 25)
+                            color = System.Drawing.Color.Orange;
+
+                        foreach (var letter in buff.DisplayName)
+                        {
+                            if (char.IsUpper(letter))
+                            {
+                                buffName += " ";
+                                buffName += letter;
+                            }
+                            else
+                            {
+                                buffName += letter;
+                            }
+                        }
+                    }
+
+                    var position = Player.HPBarPosition + new Vector2(+250, j);
+                    DrawFontTextScreen(HudCd, (timeToEnd).ToString("0.0") + " " + buffName, position.X, position.Y, SharpDX.Color.White);
+                    Drawing.DrawLine(position + new Vector2(-56, 0), position + new Vector2(-4, 0), 10, System.Drawing.Color.Black);
+                   
+                    Drawing.DrawLine(position + new Vector2(-55, 1), position + new Vector2(-55 + percent, 1), 8, color);
+                    j += 15;
+                }
             }
 
             foreach (var hero in OKTWtracker.ChampionInfoList.Where(x => !x.Hero.IsDead))
