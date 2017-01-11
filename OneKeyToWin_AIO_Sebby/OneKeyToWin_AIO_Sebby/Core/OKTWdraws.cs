@@ -135,7 +135,7 @@ namespace OneKeyToWin_AIO_Sebby.Core
 
             Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("ShowClicks", "Show enemy clicks").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("showWards", "Show hidden objects, wards").SetValue(true));
-            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("buffTracker", "My buff tracker").SetValue(true));
+            Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("buffTracker", "My buff tracker").SetValue(false));
             Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("HpBar", "Damage indicators").SetValue(true));
             Config.SubMenu("Utility, Draws OKTW©").AddItem(new MenuItem("minimap", "Mini-map hack").SetValue(true));
 
