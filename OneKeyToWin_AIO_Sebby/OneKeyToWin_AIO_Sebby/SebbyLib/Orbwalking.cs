@@ -794,6 +794,9 @@ namespace SebbyLib
                     return false;
 
                 var countAlly = Cache.GetMinions(Player.Position, 500, MinionTeam.Ally).Count;
+                var countEnemy = MinionListAA.Count;
+                if(countEnemy == 1 && countAlly > 2)
+                    return true;
                 if (countAlly > 1 && MinionListAA.Any(minion => minion.IsMoving && minion.Health < Player.GetAutoAttackDamage(minion) * 3))
                     return true;
 
