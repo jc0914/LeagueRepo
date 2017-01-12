@@ -555,7 +555,7 @@ namespace SebbyLib.Prediction
 
             // NEW PATH ///////////////////////////////////////////////////////////////////////////////////
 
-            if (UnitTracker.GetLastNewPathTime(input.Unit) < 80 && distanceUnitToWaypoint > fixRange)
+            if (UnitTracker.GetLastNewPathTime(input.Unit) < 80 && distanceUnitToWaypoint > fixRange * 2)
             {
                 OktwCommon.debug("PRED VH: NEW PATH");
                 result.Hitchance = HitChance.VeryHigh;
