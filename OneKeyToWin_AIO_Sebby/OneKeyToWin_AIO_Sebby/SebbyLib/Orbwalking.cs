@@ -792,10 +792,15 @@ namespace SebbyLib
             {
                 if(Player.Level == 18)
                     return false;
-                var attackCalc = (int)(Player.AttackDelay * 1000) + BrainFarmInt + Game.Ping / 2 + 1000 * 500 / (int)GetMyProjectileSpeed() ;
 
+                var countAlly = Cache.GetMinions(Player.Position, 0, MinionTeam.Ally).Count;
+                if (countAlly > 1 && MinionListAA.Any(minion => minion.IsMoving && minion.Health < Player.GetAutoAttackDamage(minion) * 3))
+                    return true;
+
+                var attackCalc = (int)(Player.AttackDelay * 1000) + BrainFarmInt + Game.Ping / 2 + 1000 * 500 / (int)GetMyProjectileSpeed() ;
+                
                 return
-                    MinionListAA.Any(minion => HealthPrediction.LaneClearHealthPrediction(minion, (int)(attackCalc * 2.5), FarmDelay) <= Player.GetAutoAttackDamage(minion,true));
+                    MinionListAA.Any(minion => HealthPrediction.LaneClearHealthPrediction(minion, (int)(attackCalc * 2), FarmDelay) <= Player.GetAutoAttackDamage(minion,true));
             }
 
             private bool ShouldWaitUnderTurret(Obj_AI_Minion noneKillableMinion)
