@@ -354,7 +354,6 @@ namespace OneKeyToWin_AIO_Sebby.Champions
 
         private void JungleE()
         {
-
             if (!Config.Item("jungleE", true).GetValue<bool>())
                 return;
 
@@ -362,9 +361,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             if (mobs.Count > 0)
             {
                 var mob = mobs[0];
-                var dmg = GetEdmg(mob);
+                var dmg = E.GetDamage(mob);
 
-
+                if (Player.HasBuff("summonerexhaust"))
+                    dmg = dmg * 0.6f;
                 if (mob.Name.Contains("Baron") && Player.HasBuff("barontarget"))
                 {
                     dmg = dmg * 0.5f;
