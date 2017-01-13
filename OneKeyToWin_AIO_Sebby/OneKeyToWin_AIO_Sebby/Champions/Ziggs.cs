@@ -363,7 +363,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 {
                     var allMinions = Cache.GetMinions(Player.ServerPosition, E.Range);
                     var farmPos = E.GetCircularFarmLocation(allMinions, E.Width);
-                    if (farmPos.MinionsHit >= FarmMinions)
+                    if (farmPos.MinionsHit >= FarmMinions + 1)
                         E.Cast(farmPos.Position);
                 }
             }
@@ -518,11 +518,11 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             {
                 if (Config.Item("onlyRdy", true).GetValue<bool>())
                 {
-                    if (Q.IsReady())
-                        Utility.DrawCircle(Player.Position, Q.Range, System.Drawing.Color.Cyan, 1, 1);
+                    if (Q3.IsReady())
+                        Utility.DrawCircle(Player.Position, Q3.Range, System.Drawing.Color.Cyan, 1, 1);
                 }
                 else
-                    Utility.DrawCircle(Player.Position, Q.Range, System.Drawing.Color.Cyan, 1, 1);
+                    Utility.DrawCircle(Player.Position, Q3.Range, System.Drawing.Color.Cyan, 1, 1);
             }
             if (Config.Item("wRange", true).GetValue<bool>())
             {
