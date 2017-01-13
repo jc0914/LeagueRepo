@@ -522,7 +522,7 @@ namespace OneKeyToWin_AIO_Sebby
         {
             if (Game.Time - gameStartTime < 15 && Config.Item("showSupported").GetValue<bool>())
             {
-                var row = 200;
+                var row = 50;
                 Drawing.DrawText(200, row, System.Drawing.Color.DeepSkyBlue, "OKTW AIO SUPPORTED CHAMPIONS:");
                 foreach (var name in SuportedChampions)
                 {
