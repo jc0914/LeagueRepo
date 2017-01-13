@@ -127,7 +127,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                  || args.SData.Name.ToLower() == "tormentedsoil")
                 return;
 
-            if (args.SData.IsAutoAttack())
+            if (args.Target != null && args.SData.IsAutoAttack() && args.Target.IsMe)
             {
 
                 if(AAspelss.Any(x => x.ToLower().Contains(args.SData.Name.ToLower())))
