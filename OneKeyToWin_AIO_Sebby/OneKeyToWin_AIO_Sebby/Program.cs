@@ -24,7 +24,7 @@ namespace OneKeyToWin_AIO_Sebby
 
         public static Spell Q, W, E, R, Q1, W1, E1, R1;
 
-        private static string OktNews = "TRACKER rework";
+        private static string OktNews = "Ziggs BETA";
 
         public static AioMode AioModeSet = AioMode.All;
         public static Menu Config;
