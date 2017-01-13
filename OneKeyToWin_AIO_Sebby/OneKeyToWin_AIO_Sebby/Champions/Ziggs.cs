@@ -55,6 +55,7 @@ namespace OneKeyToWin_AIO_Sebby.Champions
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("harassW", "Harass W", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("interupterW", "Interrupter W", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("turretW", "auto destroy turrets", true).SetValue(true));
+            Config.SubMenu(Player.ChampionName).SubMenu("W Config").AddItem(new MenuItem("useW", "dash W hotkey", true).SetValue(new KeyBind("Y".ToCharArray()[0], KeyBindType.Press))); //32 == space
 
             Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("autoE", "Auto E on CC", true).SetValue(true));
             Config.SubMenu(Player.ChampionName).SubMenu("E Config").AddItem(new MenuItem("comboE", "Auto E in Combo BETA", true).SetValue(true));
@@ -282,7 +283,10 @@ namespace OneKeyToWin_AIO_Sebby.Champions
         {
             if (!W.Instance.Name.Contains("oggle"))
             {
-                var t = TargetSelector.GetTarget(W.Range - 250, TargetSelector.DamageType.Magical);
+                if (Config.Item("useW", true).GetValue<KeyBind>().Active)
+                    W.Cast(Player.Position.Extend(Game.CursorPos, -100));
+
+                    var t = TargetSelector.GetTarget(W.Range - 250, TargetSelector.DamageType.Magical);
                 if (t.IsValidTarget())
                 {
                     var close = HeroManager.Enemies.FirstOrDefault(x => x.IsMelee && x.IsValidTarget(350) && x.IsFacing(Player));
