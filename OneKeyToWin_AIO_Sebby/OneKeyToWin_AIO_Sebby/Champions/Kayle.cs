@@ -114,8 +114,8 @@ namespace OneKeyToWin_AIO_Sebby.Champions
                 double dmg = OktwCommon.GetIncomingDamage(ally);
                 if (dmg == 0)
                     continue;
-
-                    R.CastOnUnit(ally);
+                    
+if (ally.Health - dmg <  ally.Level * 15 || dmg > ally.MaxHealth * 0.4)                    R.CastOnUnit(ally);
             }
         }
 
