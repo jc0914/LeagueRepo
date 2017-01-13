@@ -20,7 +20,7 @@ namespace OneKeyToWin_AIO_Sebby
 
         public static string[] SuportedChampions = { "Ahri", "Anivia", "Annie", "Ashe", "Blitzcrank", "Brand", "Braum", "Caitlyn", "Corki", "Darius", "Draven", "Ekko", "Evelynn", "Ezreal",
                                                     "Graves", "Jayce", "Jhin", "Jinx", "Kalista", "Karthus", "Kayle", "Kindred", "KogMaw", "Lucian", "Lux", "Malzahar", "MissFortune", "Morgana" ,
-                                                    "Orianna", "Quinn", "Sivir", "Swain", "Syndra", "Thresh", "Tristana", "TwistedFate", "Twitch", "Urgot", "Varus", "Vayne", "Velkoz", "Xerath" };
+                                                    "Orianna", "Quinn", "Sivir", "Swain", "Syndra", "Thresh", "Tristana", "TwistedFate", "Twitch", "Urgot", "Varus", "Vayne", "Velkoz", "Xerath", "Ziggs" };
 
         public static Spell Q, W, E, R, Q1, W1, E1, R1;
 
@@ -45,7 +45,7 @@ namespace OneKeyToWin_AIO_Sebby
         public static bool LaneClear = false, None = false, Harass = false, Combo = false, Farm = false;
 
         private static float dodgeTime = Game.Time;
-
+        private static float gameStartTime = Game.Time;
         static void Main(string[] args) { CustomEvents.Game.OnGameLoad += GameOnOnGameLoad; }
 
         private static void GameOnOnGameLoad(EventArgs args)
@@ -61,6 +61,7 @@ namespace OneKeyToWin_AIO_Sebby
             Config.SubMenu("About OKTW©").AddItem(new MenuItem("1", "visit joduska.me"));
             Config.SubMenu("About OKTW©").AddItem(new MenuItem("2", "DONATE: kaczor.sebastian@gmail.com"));
             Config.SubMenu("About OKTW©").AddItem(new MenuItem("print", "OKTW NEWS in chat").SetValue(true));
+            Config.SubMenu("About OKTW©").AddItem(new MenuItem("showSupported", "Show supported champions on start").SetValue(true));
             #endregion
 
             Config.AddItem(new MenuItem("AIOmode", "AIO mode", true).SetValue(new StringList(new[] { "Utility and champion", "Only Champion", "Only Utility" }, 0))).ValueChanged += Program_ValueChanged;
@@ -267,6 +268,7 @@ namespace OneKeyToWin_AIO_Sebby
                 Game.PrintChat("<font size='30'>OneKeyToWin</font> <font color='#b756c5'>by Sebby</font>");
                 Game.PrintChat("<font color='#b756c5'>OKTW NEWS: </font>" + OktNews);
             }
+            gameStartTime = Game.Time;
         }
 
         private static void Program_ValueChanged(object sender, OnValueChangeEventArgs e)
@@ -445,6 +447,12 @@ namespace OneKeyToWin_AIO_Sebby
                 if (QWER.Speed != float.MaxValue && OktwCommon.CollisionYasuo(Player.ServerPosition, poutput2.CastPosition))
                     return;
 
+                if (poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= SebbyLib.Prediction.HitChance.High)
+                {
+                    Console.WriteLine("AOE cast");
+                    QWER.Cast(poutput2.CastPosition);
+                }
+
                 if ((int)hitchance == 6)
                 {
                     if (poutput2.Hitchance >= SebbyLib.Prediction.HitChance.VeryHigh)
@@ -510,16 +518,22 @@ namespace OneKeyToWin_AIO_Sebby
             }
         }
 
-
         private static void OnDraw(EventArgs args)
         {
-           
-                if (AioModeSet != AioMode.UtilityOnly && !SPredictionLoad && (int)Game.Time % 2 == 0 && (Config.Item("Qpred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Wpred", true).GetValue<StringList>().SelectedIndex == 2
+            if (Game.Time - gameStartTime < 15 && Config.Item("showSupported").GetValue<bool>())
+            {
+                var row = 200;
+                Drawing.DrawText(200, row, System.Drawing.Color.DeepSkyBlue, "OKTW AIO SUPPORTED CHAMPIONS:");
+                foreach (var name in SuportedChampions)
+                {
+                    row += 12;
+                    Drawing.DrawText(200, row, System.Drawing.Color.White, name);
+                }
+            }
+
+            if (AioModeSet != AioMode.UtilityOnly && !SPredictionLoad && (int)Game.Time % 2 == 0 && (Config.Item("Qpred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Wpred", true).GetValue<StringList>().SelectedIndex == 2
                 || Config.Item("Epred", true).GetValue<StringList>().SelectedIndex == 2 || Config.Item("Rpred", true).GetValue<StringList>().SelectedIndex == 2))
                 drawText("PRESS F5 TO LOAD SPREDICTION", Player.Position, System.Drawing.Color.Yellow, -300);
-
-            
-
         }
     }
 }
