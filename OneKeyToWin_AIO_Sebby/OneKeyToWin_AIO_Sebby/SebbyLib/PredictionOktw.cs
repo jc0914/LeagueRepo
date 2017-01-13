@@ -285,7 +285,6 @@ namespace SebbyLib.Prediction
                 {
                     result.Hitchance = HitChance.High;
                     result.CastPosition = wallPoint.Extend(result.CastPosition, moveOutWall);
-                    OktwCommon.debug("PRED: Near WALL");
                 }
             }
 
@@ -321,14 +320,10 @@ namespace SebbyLib.Prediction
                 }
             }
 
-
             //Set hit chance
             if (result.Hitchance == HitChance.High)
             {
-
                 result = WayPointAnalysis(result, input);
-                //.debug(input.Unit.BaseSkinName + result.Hitchance);
-
             }
 
             //Check for collision
@@ -406,7 +401,7 @@ namespace SebbyLib.Prediction
             float totalDelay = speedDelay + input.Delay;
             float moveArea = input.Unit.MoveSpeed * totalDelay;
             float fixRange = moveArea * 0.27f;
-            float pathMinLen = 1000;
+            float pathMinLen = 800;
 
             if (input.Type == SkillshotType.SkillshotCircle)
             {
@@ -420,6 +415,14 @@ namespace SebbyLib.Prediction
                 return result; 
             }
 
+            // SPAM POSITION ///////////////////////////////////////////////////////////////////////////////////
+
+            if (UnitTracker.SpamSamePlace(input.Unit))
+            {
+                result.Hitchance = HitChance.VeryHigh;
+                return result;
+            }
+
             // SHORT CLICK DETECTION ///////////////////////////////////////////////////////////////////////////////////
 
             if (distanceUnitToWaypoint > 0 && distanceUnitToWaypoint < 50 + input.Radius)
@@ -431,8 +434,16 @@ namespace SebbyLib.Prediction
 
             if (input.Unit.IsWindingUp)
             {
-                OktwCommon.debug("PRED M: winding block");
-                result.Hitchance = HitChance.Medium;
+                if (totalDelay > 0.6)
+                {
+                    OktwCommon.debug("PRED M: winding block");
+                    result.Hitchance = HitChance.Medium;
+                }
+                else
+                {
+                    OktwCommon.debug("PRED VH: winding accept");
+                    result.Hitchance = HitChance.VeryHigh;
+                }
                 return result;
             }
             else if (!input.Unit.CanMove || input.Unit.IsRooted)
@@ -449,7 +460,7 @@ namespace SebbyLib.Prediction
                 var getAngle = pos1.AngleBetween(pos2);
 
                 // RUN IN LANE DETECTION /////////////////////////////////////////////////////////////////////////////////// 
-                if (getAngle < 15 || getAngle > 160 || ((getAngle > 140 || getAngle < 30) && distanceUnitToWaypoint > 500 && OktwCommon.IsMovingInSameDirection(ObjectManager.Player, input.Unit)))
+                if (getAngle < 20 || getAngle > 160 || ((getAngle > 150 || getAngle < 30) && OktwCommon.IsMovingInSameDirection(ObjectManager.Player, input.Unit)))
                 {
                     OktwCommon.debug("PRED VH: ANGLE " + getAngle);
                     result.Hitchance = HitChance.VeryHigh;
@@ -515,13 +526,7 @@ namespace SebbyLib.Prediction
                 }
             }
 
-            // SPAM POSITION ///////////////////////////////////////////////////////////////////////////////////
-
-            if (UnitTracker.SpamSamePlace(input.Unit))
-            {
-                result.Hitchance = HitChance.VeryHigh;
-                return result;
-            }
+            
 
             // SPECIAL CASES ///////////////////////////////////////////////////////////////////////////////////
 
@@ -555,11 +560,10 @@ namespace SebbyLib.Prediction
 
             // NEW PATH ///////////////////////////////////////////////////////////////////////////////////
 
-            if (UnitTracker.GetLastNewPathTime(input.Unit) < 80 && distanceUnitToWaypoint > fixRange * 2)
+            if (UnitTracker.GetLastNewPathTime(input.Unit) < 80  && totalDelay < 0.6)
             {
                 OktwCommon.debug("PRED VH: NEW PATH");
                 result.Hitchance = HitChance.VeryHigh;
-                return result;
             }
 
             //Program.debug("PRED: NO DETECTION");
@@ -694,9 +698,8 @@ namespace SebbyLib.Prediction
 
         internal static PredictionOutput GetPositionOnPath(PredictionInput input, List<Vector2> path, float speed = -1)
         {
-            if (input.Unit.Distance(input.From, true) < 230 * 230)
+            if (input.Unit.Distance(input.From, true) < 200 * 200)
             {
-
                 speed /= 1.5f;
             }
 
@@ -1364,32 +1367,32 @@ namespace SebbyLib.Prediction
             var TrackerUnit = UnitTrackerInfoList.Find(x => x.NetworkId == unit.NetworkId);
             if (TrackerUnit.PathBank.Count < 3)
                 return false;
+
             if (TrackerUnit.PathBank[2].Time - TrackerUnit.PathBank[1].Time < 180 && Utils.TickCount - TrackerUnit.PathBank[2].Time < 90)
             {
-                var C = TrackerUnit.PathBank[1].Position;
-                var A = TrackerUnit.PathBank[2].Position;
-
-                var B = unit.Position.To2D();
-
-                var AB = Math.Pow(A.X - B.X, 2) + Math.Pow(A.Y - B.Y, 2);
-                var BC = Math.Pow(B.X - C.X, 2) + Math.Pow(B.Y - C.Y, 2);
-                var AC = Math.Pow(A.X - C.X, 2) + Math.Pow(A.Y - C.Y, 2);
-
-
                 if (TrackerUnit.PathBank[1].Position.Distance(TrackerUnit.PathBank[2].Position) < 50)
                 {
-                    Console.WriteLine("SPAM PLACE");
-                    return true;
-                }
-                else if (Math.Cos((AB + BC - AC) / (2 * Math.Sqrt(AB) * Math.Sqrt(BC))) * 180 / Math.PI < 31)
-                {
-                    Console.WriteLine("SPAM ANGLE");
+                    Console.WriteLine("PRED VH: SPAM PLACE");
                     return true;
                 }
                 else
-                    return false;
+                {
+                    var C = TrackerUnit.PathBank[1].Position;
+                    var A = TrackerUnit.PathBank[2].Position;
+
+                    var B = unit.Position.To2D();
+
+                    var AB = Math.Pow(A.X - B.X, 2) + Math.Pow(A.Y - B.Y, 2);
+                    var BC = Math.Pow(B.X - C.X, 2) + Math.Pow(B.Y - C.Y, 2);
+                    var AC = Math.Pow(A.X - C.X, 2) + Math.Pow(A.Y - C.Y, 2);
+
+                    if (Math.Cos((AB + BC - AC) / (2 * Math.Sqrt(AB) * Math.Sqrt(BC))) * 180 / Math.PI < 31)
+                    {
+                        Console.WriteLine("PRED VH: SPAM ANGLE");
+                        return true;
+                    }
+                }
             }
-            else
                 return false;
         }
 
