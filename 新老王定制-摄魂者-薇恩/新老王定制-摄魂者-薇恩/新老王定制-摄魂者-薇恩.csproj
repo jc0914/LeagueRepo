@@ -50,8 +50,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="LwanAzir">
-      <HintPath>F:\脚本\Hshap_1.1.2_竞时通版\System\LwanAzir.dll</HintPath>
+    <Reference Include="LwanVHR">
+      <HintPath>F:\脚本\Hshap_1.1.2_竞时通版\System\LwanVHR.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
