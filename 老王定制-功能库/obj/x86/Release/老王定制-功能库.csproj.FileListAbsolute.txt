@@ -1,0 +1,5 @@
+F:\脚本\老王定制\老王定制\老王定制-必备库(全部加载）\老王定制-功能库\obj\x86\Release\老王定制-功能库.csprojResolveAssemblyReference.cache
+F:\脚本\老王定制\老王定制\老王定制-必备库(全部加载）\老王定制-功能库\obj\x86\Release\SAssembliesLib.Resources.TRANSLATIONS.Translation-de-DE.resources
+F:\脚本\老王定制\老王定制\老王定制-必备库(全部加载）\老王定制-功能库\obj\x86\Release\SAssembliesLib.Resources.TRANSLATIONS.Translation-en-US.resources
+F:\脚本\老王定制\老王定制\老王定制-必备库(全部加载）\老王定制-功能库\obj\x86\Release\SAssembliesLib.Resources.TRANSLATIONS.Translation-fr-FR.resources
+F:\脚本\老王定制\老王定制\老王定制-必备库(全部加载）\老王定制-功能库\obj\x86\Release\老王定制-功能库.csproj.GenerateResource.Cache
